@@ -1,0 +1,36 @@
+# Build Artifact
+bin/
+obj/
+
+# User-Specific Files
+*.user
+*.suo
+*.userprefs
+*.vs/
+
+# IDE
+.vscode/
+.idea/
+*.resharper
+
+# NuGet Packages / Dependencies
+*.nupkg
+packages/
+
+# Log and Temporary Files
+*.log
+*.tmp
+*.cache
+
+# Publish / Deployment Output
+publish/
+*.deploy
+
+# OS-Specific
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Other
+.env
+.env*
