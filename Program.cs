@@ -1,10 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.Globalization;
 using System.Linq;
 using ExpenseTracker.Cli.Services;
 using ExpenseTracker.Cli.Storage;
 using ExpenseTracker.Cli.Utils;
+
+string[] DateFormats = ["yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy"];
+string[] ListHeaders = ["Date", "Description", "Amount", "Category", "ID"];
+string[] SummaryHeaders = ["Category", "Amount"];
 
 var service = new ExpenseService(new JsonExpenseRepository());
 await service.InitializeAsync();
@@ -13,14 +18,14 @@ var rootCommand = new RootCommand("Expense Tracker CLI - Manage your expenses ea
 
 // Add Command
 var addCommand = new Command("add", "Add a new expense");
-var descOption = new Option<string>("--description", "Description of the expense") { Required = true };
+var descOption = new Option<string>("--description") { Description = "Description of the expense", Required = true };
 descOption.Aliases.Add("-d");
-var amountOption = new Option<decimal>("--amount", "Amount of the expense") { Required = true };
+var amountOption = new Option<decimal>("--amount") { Description = "Amount of the expense", Required = true };
 amountOption.Aliases.Add("-a");
-var categoryOption = new Option<string>("--category", "Category of the expense");
+var categoryOption = new Option<string>("--category") { Description = "Category of the expense" };
 categoryOption.Aliases.Add("-c");
 categoryOption.DefaultValueFactory = _ => "General";
-var dateOption = new Option<string>("--date", "Date of the expense (yyyy-MM-dd)");
+var dateOption = new Option<string>("--date") { Description = "Date of the expense (yyyy-MM-dd)" };
 dateOption.Aliases.Add("-t");
 dateOption.DefaultValueFactory = _ => DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -36,8 +41,7 @@ addCommand.SetAction(async result =>
     var category = result.GetValue(categoryOption)!;
     var dateStr = result.GetValue(dateOption)!;
 
-    string[] formats = ["yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy"];
-    if (!DateTime.TryParseExact(dateStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+    if (!DateTime.TryParseExact(dateStr, DateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
     {
         ConsoleHelper.WriteError($"Invalid date format: {dateStr}. Use yyyy-MM-dd.");
         return;
@@ -59,9 +63,8 @@ listCommand.SetAction(_ =>
     }
 
     ConsoleHelper.WriteInfo($"Showing {expenses.Count} expenses:\n");
-    var headers = new[] { "Date", "Description", "Amount", "Category", "ID" };
     var rows = expenses.Select(e => new[] { e.Date.ToString("yyyy-MM-dd"), e.Description, $"${e.Amount:F2}", e.Category, e.Id.ToString() }).ToList();
-    ConsoleHelper.WriteTable(headers, rows);
+    ConsoleHelper.WriteTable(ListHeaders, rows);
 });
 
 // Delete Command
@@ -107,7 +110,8 @@ summaryCommand.SetAction(result =>
         if (summary.Count > 0)
         {
             ConsoleHelper.WriteInfo("Summary by category:");
-            ConsoleHelper.WriteTable(["Category", "Amount"], summary.Select(s => new[] { s.Key, $"${s.Value:F2}" }).ToList());
+            List<string[]> rows = [.. summary.Select(s => new[] { s.Key, $"${s.Value:F2}" })];
+            ConsoleHelper.WriteTable(SummaryHeaders, rows);
         }
     }
 });
