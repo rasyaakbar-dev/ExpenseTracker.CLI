@@ -2,7 +2,7 @@
 
 A modern, high-performance command-line application for managing your daily expenses, built with **.NET 10** and **C# 12+**.
 
-## 🚀 Features
+## Features
 
 - **Add Expenses**: Quickly record expenses with descriptions, amounts, categories, and dates.
 - **List View**: View your expense history in a clean, formatted table.
@@ -12,7 +12,7 @@ A modern, high-performance command-line application for managing your daily expe
   - View spending breakdowns grouped by category.
 - **Delete**: Remove entries using their unique identifiers.
 
-## 🛠️ Technical Highlights
+## Technical Highlights
 
 - **System.CommandLine**: Utilizes the official .NET library for robust command parsing and help generation.
 - **Clean Architecture**: Separation of concerns across Models, Services, and Storage layers.
@@ -20,7 +20,7 @@ A modern, high-performance command-line application for managing your daily expe
 - **JSON Persistence**: Simple and portable data storage.
 - **Coding Standards**: Strictly adheres to the **Official Microsoft C# Coding Conventions**.
 
-## 📖 Usage
+## Usage
 
 ### Getting Started
 
@@ -63,6 +63,6 @@ dotnet run -- summary --month 2 --year 2026
 dotnet run -- delete --id [GUID]
 ```
 
-## 📝 License
+## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](file:///home/rasya/Repository/ExpenseTracker.Cli/LICENSE) file for details.

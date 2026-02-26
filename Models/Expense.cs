@@ -1,5 +1,3 @@
-using System;
-
 namespace ExpenseTracker.Cli.Models;
 
 /// <summary>

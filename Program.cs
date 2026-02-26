@@ -1,4 +1,4 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using System.Globalization;
 using ExpenseTracker.Cli.Services;
 using ExpenseTracker.Cli.Storage;
