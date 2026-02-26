@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ExpenseTracker.Cli.Models;
 
 /// <summary>
@@ -6,19 +9,19 @@ namespace ExpenseTracker.Cli.Models;
 public class Expense
 {
     /// <summary>
-    /// Gets or sets the unique identifier for the expense.
+    /// Gets the unique identifier for the expense.
     /// </summary>
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     /// <summary>
     /// Gets or sets the description of the expense.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public required string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the monetary amount of the expense.
     /// </summary>
-    public decimal Amount { get; set; }
+    public required decimal Amount { get; set; }
 
     /// <summary>
     /// Gets or sets the category of the expense.
@@ -29,6 +32,23 @@ public class Expense
     /// Gets or sets the date and time when the expense occurred.
     /// </summary>
     public DateTime Date { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Expense"/> class.
+    /// </summary>
+    public Expense() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Expense"/> class with specified values.
+    /// </summary>
+    [SetsRequiredMembers]
+    public Expense(string description, decimal amount, string category = "General", DateTime? date = null)
+    {
+        Description = description;
+        Amount = amount;
+        Category = category;
+        Date = date ?? DateTime.Now;
+    }
 
     /// <inheritdoc />
     public override string ToString()

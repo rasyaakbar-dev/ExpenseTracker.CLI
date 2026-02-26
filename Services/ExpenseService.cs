@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ExpenseTracker.Cli.Models;
 using ExpenseTracker.Cli.Storage;
 
@@ -6,39 +10,31 @@ namespace ExpenseTracker.Cli.Services;
 /// <summary>
 /// Service for managing expenses and providing summaries.
 /// </summary>
-public class ExpenseService
+/// <param name="storage">The storage repository for expenses.</param>
+public sealed class ExpenseService(JsonExpenseRepository storage)
 {
-    private readonly JsonExpenseRepository _storage;
-    private readonly List<Expense> _expenses;
+    private readonly JsonExpenseRepository _storage = storage;
+    private List<Expense> _expenses = [];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExpenseService"/> class.
+    /// Initializes the service by loading expenses from storage.
     /// </summary>
-    /// <param name="storage">The storage repository for expenses.</param>
-    public ExpenseService(JsonExpenseRepository storage)
+    public async Task InitializeAsync()
     {
-        _storage = storage;
-        _expenses = _storage.Load();
+        _expenses = await _storage.LoadAsync();
     }
 
     /// <summary>
-    /// Adds a new expense to the collection and saves it to storage.
+    /// Adds a new expense and saves it asynchronously.
     /// </summary>
     /// <param name="description">The description of the expense.</param>
     /// <param name="amount">The monetary amount.</param>
     /// <param name="category">The category of the expense.</param>
     /// <param name="date">The date when the expense occurred.</param>
-    public void AddExpense(string description, decimal amount, string category, DateTime date)
+    public async Task AddExpenseAsync(string description, decimal amount, string category, DateTime date)
     {
-        var expense = new Expense
-        {
-            Description = description,
-            Amount = amount,
-            Category = category,
-            Date = date
-        };
-        _expenses.Add(expense);
-        _storage.Save(_expenses);
+        _expenses.Add(new Expense(description, amount, category, date));
+        await _storage.SaveAsync(_expenses);
     }
 
     /// <summary>
@@ -51,17 +47,17 @@ public class ExpenseService
     }
 
     /// <summary>
-    /// Deletes an expense by its unique identifier.
+    /// Deletes an expense by its unique identifier asynchronously.
     /// </summary>
     /// <param name="id">The ID of the expense to delete.</param>
     /// <returns><c>true</c> if the expense was found and deleted; otherwise, <c>false</c>.</returns>
-    public bool DeleteExpense(Guid id)
+    public async Task<bool> DeleteExpenseAsync(Guid id)
     {
         var expense = _expenses.FirstOrDefault(e => e.Id == id);
         if (expense != null)
         {
             _expenses.Remove(expense);
-            _storage.Save(_expenses);
+            await _storage.SaveAsync(_expenses);
             return true;
         }
         return false;
