@@ -1,43 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
 using ExpenseTracker.Cli.Models;
 
-namespace ExpenseTracker.Cli.Storage
+namespace ExpenseTracker.Cli.Storage;
+
+/// <summary>
+/// Repository for managing expense storage in a JSON file.
+/// </summary>
+/// <param name="fileName">The name of the JSON file.</param>
+public class JsonExpenseRepository(string fileName = "expenses.json")
 {
-    public class JsonExpenseRepository
+    private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
+    private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+    /// <summary>
+    /// Loads expenses from the JSON file.
+    /// </summary>
+    /// <returns>A list of expenses. Returns an empty list if the file does not exist or an error occurs.</returns>
+    public List<Expense> Load()
     {
-        private readonly string _filePath;
-
-        public JsonExpenseRepository(string fileName = "expenses.json")
+        if (!File.Exists(_filePath))
         {
-            _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            return [];
         }
 
-        public List<Expense> Load()
+        try
         {
-            if (!File.Exists(_filePath))
-            {
-                return new List<Expense>();
-            }
-
-            try
-            {
-                string json = File.ReadAllText(_filePath);
-                return JsonSerializer.Deserialize<List<Expense>>(json) ?? new List<Expense>();
-            }
-            catch
-            {
-                return new List<Expense>();
-            }
+            string json = File.ReadAllText(_filePath);
+            return JsonSerializer.Deserialize<List<Expense>>(json) ?? [];
         }
-
-        public void Save(List<Expense> expenses)
+        catch (JsonException ex)
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string json = JsonSerializer.Serialize(expenses, options);
-            File.WriteAllText(_filePath, json);
+            // Log or handle specific JSON issues
+            Console.WriteLine($"Error parsing expenses: {ex.Message}");
+            return [];
         }
+        catch (IOException ex)
+        {
+            // Log or handle file access issues
+            Console.WriteLine($"Error reading expenses file: {ex.Message}");
+            return [];
+        }
+    }
+
+    /// <summary>
+    /// Saves the provided expenses to the JSON file.
+    /// </summary>
+    /// <param name="expenses">The list of expenses to save.</param>
+    public void Save(List<Expense> expenses)
+    {
+        string json = JsonSerializer.Serialize(expenses, SerializerOptions);
+        File.WriteAllText(_filePath, json);
     }
 }
