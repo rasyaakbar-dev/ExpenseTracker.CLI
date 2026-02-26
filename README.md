@@ -1,68 +1,40 @@
 # Expense Tracker CLI
 
-A modern, high-performance command-line application for managing your daily expenses, built with **.NET 10** and **C# 12+**.
+A lightweight, high-performance console tool for managing daily expenses, built with **.NET 10** and **C# 12+**.
 
-## Features
+## 🚀 Features
 
-- **Add Expenses**: Quickly record expenses with descriptions, amounts, categories, and dates.
-- **List View**: View your expense history in a clean, formatted table.
-- **Summaries**:
-  - Get a grand total of all spending.
-  - Filter summaries by month and year.
-  - View spending breakdowns grouped by category.
-- **Delete**: Remove entries using their unique identifiers.
+- **Add**: Record expenses with description, amount, category, and date.
+- **List**: View all expenses in a clean, formatted table.
+- **Summary**: Get spending totals and category-based breakdowns.
+- **Delete**: Remove records using unique IDs.
+- **Async**: Fully asynchronous I/O for performance.
 
-## Technical Highlights
+## 🛠️ Tech Stack
 
-- **System.CommandLine**: Utilizes the official .NET library for robust command parsing and help generation.
-- **Clean Architecture**: Separation of concerns across Models, Services, and Storage layers.
-- **Modern C# Features**: Leverages C# 12+ features such as Primary Constructors, Collection Expressions, and File-Scoped Namespaces.
-- **JSON Persistence**: Simple and portable data storage.
-- **Coding Standards**: Strictly adheres to the **Official Microsoft C# Coding Conventions**.
+- **.NET 10** & **C# 12+** (Top-Level Statements, Primary Constructors, required props).
+- **System.CommandLine** for robust parsing.
+- **System.Text.Json** for async data persistence.
 
-## Usage
-
-### Getting Started
-
-Ensure you have the [.NET 10 SDK](https://dotnet.microsoft.com/download) installed.
-
-```bash
-# Clone and build
-dotnet build
-```
+## 📖 Usage
 
 ### Commands
 
-#### Add a new expense
-
 ```bash
-dotnet run -- add --description "Coffee" --amount 4.50 --category "Food"
-# Short aliases
-dotnet run -- add -d "Lunch" -a 15.00 -c "Food" -t "2026-02-26"
-```
+# Add expense
+dotnet run -- add -d "Coffee" -a 4.50 -c "Food"
 
-#### List all expenses
-
-```bash
+# List all
 dotnet run -- list
-```
 
-#### Show summaries
-
-```bash
-# Overall summary
+# Summary (Overall or Monthly)
 dotnet run -- summary
+dotnet run -- summary -m 2 -y 2026
 
-# Monthly summary
-dotnet run -- summary --month 2 --year 2026
+# Delete
+dotnet run -- delete -i [GUID]
 ```
 
-#### Delete an expense
+## 📜 License
 
-```bash
-dotnet run -- delete --id [GUID]
-```
-
-## License
-
-This project is licensed under the **MIT License**. See the [LICENSE](file:///home/rasya/Repository/ExpenseTracker.Cli/LICENSE) file for details.
+MIT License. See [LICENSE](file:///home/rasya/Repository/ExpenseTracker.Cli/LICENSE) for details.
